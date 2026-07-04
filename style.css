@@ -1,5 +1,5 @@
 /* ========================================== */
-/* 1. БАЗОВІ НАЛАШТУВАННЯ                     */
+/* 1. ОБНУЛЕННЯ ТА БАЗОВІ НАЛАШТУВАННЯ       */
 /* ========================================== */
 * {
     margin: 0;
@@ -10,7 +10,7 @@
 
 body {
     font-family: 'Montserrat', sans-serif;
-    background-color: #12100f; /* Елегантне темне тло на ПК навколо телефона */
+    background-color: #12100f; /* Колір тла навколо телефона на ПК */
     color: #2c2927;
     overflow: hidden;
     height: 100vh;
@@ -25,14 +25,12 @@ h1, h2, h3 {
     font-weight: 400;
 }
 
-/* ========================================== */
-/* 2. АДАПТИВНИЙ МОБІЛЬНИЙ КОРПУС НА ВСІ ЕКРАНИ*/
-/* ========================================== */
+/* Головний контейнер-рамка, що імітує телефон */
 .mobile-app-frame {
     position: relative;
     width: 100%;
     height: 100%;
-    max-width: 450px; /* Сайт зафіксовано як мобільний додаток */
+    max-width: 450px;
     background-color: #fdfcfb;
     box-shadow: 0 0 30px rgba(0,0,0,0.7);
     overflow: hidden;
@@ -45,22 +43,28 @@ h1, h2, h3 {
 }
 
 /* ========================================== */
-/* 3. АДАПТИВНИЙ КОНВЕРТ (БЕЗ БАГІВ)          */
+/* 2. АДАТИВНИЙ КОНВЕРТ (АБСОЛЮТНО БЕЗ БАГІВ) */
 /* ========================================== */
 .envelope-wrapper {
     position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     background: radial-gradient(circle, #f7f3ed 0%, #cfc2b5 100%);
-    display: flex; justify-content: center; align-items: center;
-    z-index: 100; padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+    padding: 20px;
     transition: opacity 0.6s ease, visibility 0.6s;
 }
 
-/* Контейнер обмежує максимальний розмір конверта на великих екранах */
+/* Контейнер задає правильні пропорції конверта 3:2 на будь-якому екрані */
 .envelope-container {
     width: 100%;
     max-width: 360px;
-    aspect-ratio: 3 / 2; /* Ідеальне мобільне співвідношення сторін 360х240 */
+    aspect-ratio: 3 / 2;
     position: relative;
 }
 
@@ -68,104 +72,166 @@ h1, h2, h3 {
     position: relative;
     width: 100%;
     height: 100%;
-    background: #c3b5a9;
+    background-color: #c3b5a9;
     border-radius: 4px;
     box-shadow: 0 15px 35px rgba(0,0,0,0.15);
     cursor: pointer;
 }
 
-/* Геометрія конверта побудована на % від батьківського блоку */
+/* Нижня кишеня (використовуємо лінійні градієнти замість border-borders, щоб уникнути щілин) */
 .envelope::before {
-    content: ""; position: absolute; z-index: 5;
-    border-left: 180px solid transparent; border-right: 180px solid transparent;
-    border-bottom: 120px solid #baad9f; bottom: 0; left: 0;
-    width: 100%; height: 50%;
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 50%;
+    background: linear-gradient(to top left, #baad9f 50%, transparent 50%), 
+                linear-gradient(to top right, #baad9f 50%, transparent 50%);
+    background-size: 50% 100%;
+    background-position: left bottom, right bottom;
+    background-repeat: no-repeat;
+    z-index: 5;
 }
+
+/* Лівий клапан */
 .envelope::after {
-    content: ""; position: absolute; z-index: 4;
-    border-top: 120px solid transparent; border-bottom: 120px solid transparent;
-    border-left: 180px solid #b3a597; top: 0; left: 0;
-    width: 50%; height: 100%;
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(to bottom right, transparent 50%, #b3a597 50%), 
+                linear-gradient(to top right, transparent 50%, #b3a597 50%);
+    background-size: 100% 50%;
+    background-position: top left, bottom left;
+    background-repeat: no-repeat;
+    z-index: 4;
 }
+
+/* Правий клапан */
 .envelope .pocket {
-    position: absolute; z-index: 4; top: 0; right: 0;
-    width: 50%; height: 100%;
-    border-top: 120px solid transparent; border-bottom: 120px solid transparent;
-    border-right: 180px solid #b8aa9c;
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(to bottom left, transparent 50%, #b8aa9c 50%), 
+                linear-gradient(to top left, transparent 50%, #b8aa9c 50%);
+    background-size: 100% 50%;
+    background-position: top right, bottom right;
+    background-repeat: no-repeat;
+    z-index: 4;
 }
+
+/* Верхній клапан, що відкривається */
 .envelope .flap {
-    position: absolute; top: 0; left: 0; width: 100%; height: 50%;
-    border-left: 180px solid transparent; border-right: 180px solid transparent;
-    border-top: 122px solid #c9bdae;
-    transform-origin: top; z-index: 6;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 50%;
+    background: linear-gradient(to bottom left, #c9bdae 50%, transparent 50%), 
+                linear-gradient(to bottom right, #c9bdae 50%, transparent 50%);
+    background-size: 50% 100%;
+    background-position: left top, right top;
+    background-repeat: no-repeat;
+    transform-origin: top;
+    z-index: 6;
     transition: transform 0.5s ease-in-out;
 }
 
 /* Сургучна печатка */
 .envelope .seal {
-    position: absolute; top: 50%; left: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
     transform: translate(-50%, -25%);
-    width: 50px; height: 50px;
-    background-color: #8c2d19; border-radius: 50%; z-index: 7;
+    width: 50px;
+    height: 50px;
+    background-color: #8c2d19;
+    border-radius: 50%;
+    z-index: 7;
     box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-    display: flex; justify-content: center; align-items: center;
-    color: #dfba6b; font-size: 0.65rem; font-weight: bold;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #dfba6b;
+    font-size: 0.65rem;
+    font-weight: bold;
     border: 2px dashed rgba(223, 186, 107, 0.4);
     transition: transform 0.4s ease, opacity 0.3s;
 }
 
-/* Лист */
+/* Лист всередині конверта */
 .envelope .letter {
-    position: absolute; top: 5%; left: 5%;
-    width: 90%; height: 90%;
-    background: #fffcf9; z-index: 2; padding: 10px;
+    position: absolute;
+    top: 5%;
+    left: 5%;
+    width: 90%;
+    height: 90%;
+    background: #fffcf9;
+    z-index: 2;
+    padding: 10px;
     transition: transform 0.6s ease-out;
-    display: flex; justify-content: center; align-items: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .letter-inner {
-    text-align: center; border: 1px solid #dfba6b;
-    width: 100%; height: 100%;
-    display: flex; flex-direction: column; justify-content: center; align-items: center;
+    text-align: center;
+    border: 1px solid #dfba6b;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 .letter-date { font-size: 0.7rem; letter-spacing: 3px; color: #bfa15f; margin-bottom: 5px; }
 .letter-inner h2 { font-size: 1.35rem; color: #3a3532; line-height: 1.2; }
 .letter-click-text { font-size: 0.55rem; letter-spacing: 1px; margin-top: 8px; color: #bbb; text-transform: uppercase; }
 
-/* Стан відкриття конверта */
+/* КЛАСИ АНІМАЦІЇ ДЛЯ СТАНУ ВІДКРИТТЯ */
 .envelope-wrapper.open .envelope .flap { transform: rotateX(180deg); z-index: 1; }
 .envelope-wrapper.open .envelope .seal { transform: translate(-50%, -100px) scale(0); opacity: 0; }
-.envelope-wrapper.open .envelope .letter { transform: translateY(-50%); z-index: 3; }
+.envelope-wrapper.open .envelope .letter { transform: translateY(-55%); z-index: 3; }
 .envelope-wrapper.fade-out { opacity: 0; visibility: hidden; }
 
 /* ========================================== */
-/* 4. ОДНАКОВЕ ГОРТАННЯ ДЛЯ ВСІХ СЛАЙДІВ (FADE)*/
+/* 3. ОДНАКОВЕ ГОРТАННЯ СЛАЙДІВ (FADE ЕФЕКТ) */
 /* ========================================== */
 .slide {
     position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     display: flex;
     flex-direction: column;
-    /* Усі слайди за замовчуванням повністю прозорі */
+    /* Усі слайди за замовчуванням приховані й прозорі */
     opacity: 0; 
     visibility: hidden;
-    transition: opacity 0.5s ease, visibility 0.5s ease; /* Ефект як на 1 слайді */
+    transition: opacity 0.5s ease, visibility 0.5s ease; /* однаковий ефект для всіх */
 }
 
+/* Активний слайд просто плавно проявляється */
 .slide.active {
     opacity: 1;
     visibility: visible;
 }
 
-/* Текстуровані весільні фони */
+/* Елегантні градієнтні фони для кожного слайда */
 .slide:nth-child(1) { background: linear-gradient(180deg, #fdfbf7 0%, #eae1d7 100%); }
 .slide:nth-child(2) { background: linear-gradient(180deg, #faf6f0 0%, #e2dad0 100%); }
 .slide:nth-child(3) { background: linear-gradient(180deg, #fdfcfb 0%, #ebe4dc 100%); }
 .slide:nth-child(4) { background: linear-gradient(180deg, #fefcf9 0%, #e6ded5 100%); }
 .slide:nth-child(5) { background: linear-gradient(180deg, #fdfbf7 0%, #dfd6cc 100%); }
 
-/* Верхні медіа-зони для фотографій */
+/* Верхні медіа-зони (фото) */
 .slide-hero-image {
     width: 100%;
     height: 44vh;
@@ -185,7 +251,7 @@ h1, h2, h3 {
     background: linear-gradient(to bottom, rgba(0,0,0,0) 60%, rgba(44,41,39,0.08));
 }
 
-/* Прибрано випливання тексту знизу, тепер текст просто з'являється разом зі слайдом */
+/* Нижні текстові блоки (статичні, без випливань знизу) */
 .slide-content-box {
     width: 100%;
     height: 56vh;
@@ -201,7 +267,7 @@ h1, h2, h3 {
     justify-content: center;
 }
 
-/* Скрол для текстових блоків */
+/* Внутрішній скрол тексту */
 .text-scrollable {
     width: 100%;
     overflow-y: auto;
@@ -215,7 +281,7 @@ h1, h2, h3 {
     margin-bottom: 10px;
 }
 
-/* Стилі типографіки */
+/* Елементи оформлення та шрифти */
 .gold-badge {
     font-size: 0.65rem;
     text-transform: uppercase;
@@ -286,7 +352,7 @@ h1, h2, h3 {
 }
 
 /* ========================================== */
-/* 5. ТАЙМЛАЙН ПРОГРАМИ                       */
+/* 4. СТИЛІ ДЛЯ СЛАЙДА ПРОГРАМИ (ТАЙМЛАЙН)    */
 /* ========================================== */
 .full-page-content {
     height: 100vh !important;
@@ -332,7 +398,7 @@ h1, h2, h3 {
 .event-desc p { font-size: 0.8rem; color: #7a7069; }
 
 /* ========================================== */
-/* 6. БЛОКИ З RSVP ТА QR КОДОМ                 */
+/* 5. RSVP БЛОКИ ТА QR КОД                    */
 /* ========================================== */
 .contacts-wrapper {
     display: flex; flex-direction: column; gap: 6px; width: 100%; margin-bottom: 10px;
@@ -358,7 +424,7 @@ h1, h2, h3 {
 .qr-img { width: 100px; height: 100px; display: block; }
 
 /* ========================================== */
-/* 7. ІНДИКАТОР ВГОРІ ТА ПІДКАЗКИ            */
+/* 6. ІНДИКАТОРИ ТА ПІДКАЗКИ                  */
 /* ========================================== */
 .progress-bar-container {
     position: fixed; top: 0; left: 0; width: 100%; height: 3px;
