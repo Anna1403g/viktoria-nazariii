@@ -12,19 +12,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const totalSlides = slides.length;
     let isEnvelopeOpened = false;
 
-    // ==========================================
-    // ЛОГІКА ВІДКРИТТЯ КОНВЕРТА Мобільна версія
-    // ==========================================
+    // ЛОГІКА ВІДКРИТТЯ КОНВЕРТА БЕЗ БАГІВ
     mainEnvelope.addEventListener('click', (e) => {
         e.stopPropagation();
         
         if (!isEnvelopeOpened) {
             isEnvelopeOpened = true;
             
-            // Відкриваємо кришку конверта
+            // Запуск анімації відкриття клапана
             envelopeWrapper.classList.add('open');
             
-            // Затримка на виліт листа та зникнення конверта
+            // Після вильоту листа (1.4 сек) ховаємо конверт і запускаємо слайдер
             setTimeout(() => {
                 envelopeWrapper.classList.add('fade-out');
                 mainSlider.classList.add('ready');
@@ -32,21 +30,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 updateProgressBar();
                 showTapHint();
-            }, 1500);
+            }, 1400);
         }
     });
 
-    // Показ тимчасової підказки для гостя
     function showTapHint() {
         tapHint.classList.add('show');
         setTimeout(() => {
             tapHint.classList.remove('show');
-        }, 3500);
+        }, 3000);
     }
 
-    // ==========================================
-    // НАВІГАЦІЯ ТАПАМИ ПО ЕКРАНУ СМАРТФОНУ
-    // ==========================================
+    // НАВІГАЦІЯ ТАПАМИ З ОДНАКОВОЮ АНІМАЦІЄЮ НА ВСІХ СЛАЙДАХ
     function showSlide(index) {
         slides[currentSlide].classList.remove('active');
         currentSlide = (index + totalSlides) % totalSlides;
@@ -59,12 +54,12 @@ document.addEventListener('DOMContentLoaded', () => {
         progressLine.style.width = `${percentage}%`;
     }
 
-    // Клік по екрану ділить телефон навпіл: праворуч — вперед, ліворуч — назад
+    // Поділ екрану навпіл для гортання
     document.addEventListener('click', (e) => {
         if (!isEnvelopeOpened) return;
 
-        // Перевіряємо, чи користувач не натиснув на посилання або кнопку телефону
-        if (e.target.tagName === 'A' || e.target.closest('.text-scrollable') && e.target.tagName === 'P') {
+        // Якщо клікнули по кнопці телефону або посиланню — не гортаємо слайд
+        if (e.target.tagName === 'A' || e.target.closest('.phone-btn') || e.target.closest('.text-scrollable') && e.target.tagName === 'P') {
             return; 
         }
 
@@ -72,13 +67,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const clickX = e.clientX;
 
         if (clickX > screenWidth / 2) {
-            showSlide(currentSlide + 1); // Клік по правій стороні
+            showSlide(currentSlide + 1); // Клік праворуч — вперед
         } else {
-            showSlide(currentSlide - 1); // Клік по лівій стороні
+            showSlide(currentSlide - 1); // Клік ліворуч — назад
         }
     });
 
-    // Додатково залишаємо стрілочки клавіатури, якщо хтось відкриє на ноутбуці
+    // Підтримка стрілочок клавіатури
     document.addEventListener('keydown', (e) => {
         if (!isEnvelopeOpened) return;
         if (e.key === 'ArrowRight') showSlide(currentSlide + 1);
