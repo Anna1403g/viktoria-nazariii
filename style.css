@@ -45,56 +45,60 @@ h1, h2, h3 {
 }
 
 /* ========================================== */
-/* 3. ОНОВЛЕНИЙ БЕЗБАГОВИЙ КОНВЕРТ             */
+/* 3. АДАПТИВНИЙ КОНВЕРТ (БЕЗ БАГІВ)          */
 /* ========================================== */
 .envelope-wrapper {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    top: 0; left: 0; width: 100%; height: 100%;
     background: radial-gradient(circle, #f7f3ed 0%, #cfc2b5 100%);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 100;
-    padding: 20px;
+    display: flex; justify-content: center; align-items: center;
+    z-index: 100; padding: 20px;
     transition: opacity 0.6s ease, visibility 0.6s;
+}
+
+/* Контейнер обмежує максимальний розмір конверта на великих екранах */
+.envelope-container {
+    width: 100%;
+    max-width: 360px;
+    aspect-ratio: 3 / 2; /* Ідеальне мобільне співвідношення сторін 360х240 */
+    position: relative;
 }
 
 .envelope {
     position: relative;
     width: 100%;
-    max-width: 360px; /* Чіткий розмір для уникнення багів */
-    height: 240px;
+    height: 100%;
     background: #c3b5a9;
     border-radius: 4px;
     box-shadow: 0 15px 35px rgba(0,0,0,0.15);
     cursor: pointer;
 }
 
-/* Геометрія кишені конверта */
+/* Геометрія конверта побудована на % від батьківського блоку */
 .envelope::before {
     content: ""; position: absolute; z-index: 5;
     border-left: 180px solid transparent; border-right: 180px solid transparent;
     border-bottom: 120px solid #baad9f; bottom: 0; left: 0;
+    width: 100%; height: 50%;
 }
 .envelope::after {
     content: ""; position: absolute; z-index: 4;
     border-top: 120px solid transparent; border-bottom: 120px solid transparent;
     border-left: 180px solid #b3a597; top: 0; left: 0;
+    width: 50%; height: 100%;
 }
 .envelope .pocket {
-    position: absolute; z-index: 4;
+    position: absolute; z-index: 4; top: 0; right: 0;
+    width: 50%; height: 100%;
     border-top: 120px solid transparent; border-bottom: 120px solid transparent;
-    border-right: 180px solid #b8aa9c; top: 0; right: 0;
+    border-right: 180px solid #b8aa9c;
 }
 .envelope .flap {
-    position: absolute; top: 0; left: 0;
+    position: absolute; top: 0; left: 0; width: 100%; height: 50%;
     border-left: 180px solid transparent; border-right: 180px solid transparent;
     border-top: 122px solid #c9bdae;
     transform-origin: top; z-index: 6;
-    transition: transform 0.4s ease-in-out;
+    transition: transform 0.5s ease-in-out;
 }
 
 /* Сургучна печатка */
@@ -110,12 +114,12 @@ h1, h2, h3 {
     transition: transform 0.4s ease, opacity 0.3s;
 }
 
-/* Внутрішній лист */
+/* Лист */
 .envelope .letter {
-    position: absolute; top: 10px; left: 5%;
-    width: 90%; height: 220px;
+    position: absolute; top: 5%; left: 5%;
+    width: 90%; height: 90%;
     background: #fffcf9; z-index: 2; padding: 10px;
-    transition: transform 0.5s ease-out;
+    transition: transform 0.6s ease-out;
     display: flex; justify-content: center; align-items: center;
 }
 
@@ -129,10 +133,10 @@ h1, h2, h3 {
 .letter-inner h2 { font-size: 1.35rem; color: #3a3532; line-height: 1.2; }
 .letter-click-text { font-size: 0.55rem; letter-spacing: 1px; margin-top: 8px; color: #bbb; text-transform: uppercase; }
 
-/* Анімації відкриття конверта без заїдань */
+/* Стан відкриття конверта */
 .envelope-wrapper.open .envelope .flap { transform: rotateX(180deg); z-index: 1; }
 .envelope-wrapper.open .envelope .seal { transform: translate(-50%, -100px) scale(0); opacity: 0; }
-.envelope-wrapper.open .envelope .letter { transform: translateY(-110px); z-index: 3; }
+.envelope-wrapper.open .envelope .letter { transform: translateY(-50%); z-index: 3; }
 .envelope-wrapper.fade-out { opacity: 0; visibility: hidden; }
 
 /* ========================================== */
