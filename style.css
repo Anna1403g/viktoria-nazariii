@@ -1,31 +1,53 @@
 /* ========================================== */
-/* 1. ЗАГАЛЬНІ НАЛАШТУВАННЯ ТА СКИДАННЯ СТИЛІВ */
+/* 1. БАЗОВІ НАЛАШТУВАННЯ (MOBILE FIRST)      */
 /* ========================================== */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent; /* Вимикає виділення при тапах */
 }
 
 body {
     font-family: 'Montserrat', sans-serif;
-    background-color: #fcfbfa;
+    background-color: #1a1716; /* Темний елегантний фон навколо телефона на ПК */
     color: #2c2927;
     overflow: hidden;
     height: 100vh;
     width: 100vw;
-    user-select: none;
-    -webkit-tap-highlight-color: transparent; /* Прибирає синє підсвічування при тапах на мобільних */
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 h1, h2, h3 {
     font-family: 'Cormorant Garamond', serif;
     font-weight: 400;
-    letter-spacing: 1px;
 }
 
 /* ========================================== */
-/* 2. АДАПТИВНИЙ КОНВЕРТ (ДЛЯ ВСІХ ЕКРАНІВ)   */
+/* 2. РАМКА ДЛЯ ЕКРАНУ ТЕЛЕФОНУ (ДЛЯ ПК СТИЛЮ)*/
+/* ========================================== */
+.mobile-app-frame {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    max-width: 450px; /* Максимальна ширина як у смартфона */
+    background-color: #fdfcfb;
+    box-shadow: 0 0 40px rgba(0,0,0,0.8);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    opacity: 0;
+    transition: opacity 0.8s ease;
+}
+
+.mobile-app-frame.ready {
+    opacity: 1;
+}
+
+/* ========================================== */
+/* 3. МОБІЛЬНИЙ ІНТЕРАКТИВНИЙ КОНВЕРТ         */
 /* ========================================== */
 .envelope-wrapper {
     position: fixed;
@@ -33,210 +55,115 @@ h1, h2, h3 {
     left: 0;
     width: 100%;
     height: 100%;
-    background: radial-gradient(circle, #f5f0ea 0%, #e2d7cd 100%);
+    background: radial-gradient(circle, #f5f0ea 0%, #d5c8bb 100%);
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 100;
-    transition: opacity 1s cubic-bezier(0.7, 0, 0.3, 1), visibility 1s;
     padding: 20px;
+    transition: opacity 0.8s ease, visibility 0.8s;
 }
 
 .envelope {
     position: relative;
     width: 100%;
-    max-width: 430px; /* Ідеально під ширину екрана iPhone/Android */
-    height: 280px;
+    max-width: 380px;
+    height: 250px;
     background: #c3b5a9;
     border-radius: 4px;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
     cursor: pointer;
 }
 
-/* Формування геометрії конверта через CSS */
+/* Конверт малюється адаптивно під ширину */
 .envelope::before {
-    content: "";
-    position: absolute;
-    z-index: 5;
-    border-left: 50vw solid transparent;
-    border-right: 50vw solid transparent;
-    border-bottom: 140px solid #baad9f;
-    bottom: 0;
-    left: 0;
+    content: ""; position: absolute; z-index: 5;
+    border-left: 190px solid transparent; border-right: 190px solid transparent;
+    border-bottom: 125px solid #baad9f; bottom: 0; left: 0;
 }
-@media (min-width: 430px) {
-    .envelope::before {
-        border-left-width: 215px;
-        border-right-width: 215px;
-    }
-}
-
 .envelope::after {
-    content: "";
-    position: absolute;
-    z-index: 4;
-    border-top: 140px solid transparent;
-    border-bottom: 140px solid transparent;
-    border-left: 50vw solid #b3a597;
-    top: 0;
-    left: 0;
+    content: ""; position: absolute; z-index: 4;
+    border-top: 125px solid transparent; border-bottom: 125px solid transparent;
+    border-left: 190px solid #b3a597; top: 0; left: 0;
 }
-@media (min-width: 430px) {
-    .envelope::after { border-left-width: 215px; }
-}
-
 .envelope .pocket {
-    position: absolute;
-    z-index: 4;
-    border-top: 140px solid transparent;
-    border-bottom: 140px solid transparent;
-    border-right: 50vw solid #b8aa9c;
-    top: 0;
-    right: 0;
+    position: absolute; z-index: 4;
+    border-top: 125px solid transparent; border-bottom: 125px solid transparent;
+    border-right: 190px solid #b8aa9c; top: 0; right: 0;
 }
-@media (min-width: 430px) {
-    .envelope .pocket { border-right-width: 215px; }
-}
-
 .envelope .flap {
-    position: absolute;
-    top: 0;
-    left: 0;
-    border-left: 50vw solid transparent;
-    border-right: 50vw solid transparent;
-    border-top: 145px solid #c9bdae;
-    transform-origin: top;
-    z-index: 6;
-    transition: transform 0.6s ease-in-out;
-}
-@media (min-width: 430px) {
-    .envelope .flap { border-left-width: 215px; border-right-width: 215px; }
+    position: absolute; top: 0; left: 0;
+    border-left: 190px solid transparent; border-right: 190px solid transparent;
+    border-top: 130px solid #c9bdae;
+    transform-origin: top; z-index: 6;
+    transition: transform 0.5s ease-in-out;
 }
 
 .envelope .seal {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -40%);
-    width: 55px;
-    height: 55px;
-    background-color: #8c2d19;
-    border-radius: 50%;
-    z-index: 7;
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -30%);
+    width: 50px; height: 50px;
+    background-color: #8c2d19; border-radius: 50%; z-index: 7;
     box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: #dfba6b;
-    font-size: 0.7rem;
-    font-weight: bold;
+    display: flex; justify-content: center; align-items: center;
+    color: #dfba6b; font-size: 0.65rem; font-weight: bold;
     border: 2px dashed rgba(223, 186, 107, 0.4);
-    transition: transform 0.5s ease-in-out, opacity 0.3s;
+    transition: transform 0.4s ease, opacity 0.3s;
 }
 
 .envelope .letter {
-    position: absolute;
-    top: 10px;
-    left: 5%;
-    width: 90%;
-    height: 260px;
-    background: #fffcf9;
-    z-index: 2;
-    padding: 15px;
-    transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    position: absolute; top: 10px; left: 5%;
+    width: 90%; height: 230px;
+    background: #fffcf9; z-index: 2; padding: 12px;
+    transition: transform 0.6s ease-out;
+    display: flex; justify-content: center; align-items: center;
 }
 
 .letter-inner {
-    text-align: center;
-    border: 1px solid #dfba6b;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    padding: 10px;
+    text-align: center; border: 1px solid #dfba6b;
+    width: 100%; height: 100%;
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
 }
 
-.letter-date {
-    font-size: 0.75rem;
-    letter-spacing: 3px;
-    color: #bfa15f;
-    margin-bottom: 8px;
-}
+.letter-date { font-size: 0.7rem; letter-spacing: 3px; color: #bfa15f; margin-bottom: 5px; }
+.letter-inner h2 { font-size: 1.4rem; color: #3a3532; line-height: 1.2; }
+.letter-click-text { font-size: 0.55rem; letter-spacing: 1px; margin-top: 10px; color: #bbb; text-transform: uppercase; }
 
-.letter-inner h2 {
-    font-size: 1.6rem;
-    color: #3a3532;
-    line-height: 1.2;
-}
-
-.letter-click-text {
-    font-size: 0.6rem;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    margin-top: 12px;
-    color: #aaa;
-}
-
-/* Анімація відкриття */
+/* Анімації відкриття */
 .envelope-wrapper.open .envelope .flap { transform: rotateX(180deg); z-index: 1; }
-.envelope-wrapper.open .envelope .seal { transform: translate(-50%, -150px) scale(0); opacity: 0; }
-.envelope-wrapper.open .envelope .letter { transform: translateY(-140px); z-index: 3; }
+.envelope-wrapper.open .envelope .seal { transform: translate(-50%, -120px) scale(0); opacity: 0; }
+.envelope-wrapper.open .envelope .letter { transform: translateY(-130px); z-index: 3; }
 .envelope-wrapper.fade-out { opacity: 0; visibility: hidden; }
 
 /* ========================================== */
-/* 3. ГОЛОВНИЙ СЛАЙДЕР ТА МОБІЛЬНІ ФОНИ       */
+/* 4. СТРУКТУРА СЛАЙДІВ ТА АНІМАЦІЯ КОНТЕНТУ  */
 /* ========================================== */
-.slider-container {
-    position: relative;
-    width: 100%;
-    height: 100vh;
-    opacity: 0;
-    transition: opacity 1s ease-in;
-}
-.slider-container.ready { opacity: 1; }
-
 .slide {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.8s ease, visibility 0.8s;
-}
-.slide.active { opacity: 1; visibility: visible; }
-
-/* Індивідуальні ніжні градієнти для різноманітності екранів */
-.slide:nth-child(1) { background: linear-gradient(180deg, #fbf9f6 0%, #ede5dc 100%); }
-.slide:nth-child(2) { background: linear-gradient(180deg, #fdfbf7 0%, #e5ded6 100%); }
-.slide:nth-child(3) { background: linear-gradient(180deg, #faf6f0 0%, #e2dad0 100%); }
-.slide:nth-child(4) { background: linear-gradient(180deg, #fefcf9 0%, #e8e0d7 100%); }
-.slide:nth-child(5) { background: linear-gradient(180deg, #fdfbf7 0%, #e1d8ce 100%); }
-
-/* ========================================== */
-/* 4. СТРУКТУРА СЛАЙДІВ (ВЕРТИКАЛЬНА ДЛЯ ТЕЛЕФОНІВ) */
-/* ========================================== */
-.slide-grid {
+    top: 0; left: 0; width: 100%; height: 100%;
+    opacity: 0; visibility: hidden;
     display: flex;
-    flex-direction: column; /* Картинка зверху, текст знизу */
-    width: 100%;
-    height: 100vh;
-}
-.slide-grid.inverse {
-    flex-direction: column; /* Зберігаємо єдиний стиль на мобільних */
+    flex-direction: column;
+    transition: opacity 0.6s ease, visibility 0.6s;
 }
 
-/* Контейнери зображень на телефонах позиціонуються на 40% висоти екрану */
-.slide-image-box {
-    position: relative;
+/* Індивідуальні красиві ніжні фони з текстурою візерунків */
+.slide:nth-child(1) { background: linear-gradient(180deg, #fdfbf7 0%, #eae1d7 100%); }
+.slide:nth-child(2) { background: linear-gradient(180deg, #faf6f0 0%, #e2dad0 100%); }
+.slide:nth-child(3) { background: linear-gradient(180deg, #fdfcfb 0%, #ebe4dc 100%); }
+.slide:nth-child(4) { background: linear-gradient(180deg, #fefcf9 0%, #e6ded5 100%); }
+.slide:nth-child(5) { background: linear-gradient(180deg, #fdfbf7 0%, #dfd6cc 100%); }
+
+.slide.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Вертикальні фото-блоки для екрану телефону */
+.slide-hero-image {
     width: 100%;
-    height: 42vh; 
+    height: 44vh; /* Займає чітко верхню частину */
+    position: relative;
     overflow: hidden;
 }
 
@@ -244,259 +171,293 @@ h1, h2, h3 {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    transition: transform 4s ease;
 }
 
-.image-overlay {
+.slide.active .wedding-img {
+    transform: scale(1.04);
+}
+
+/* Витончений градієнт-затемнення поверх фотографії */
+.img-gradient-overlay {
     position: absolute;
     top: 0; left: 0; width: 100%; height: 100%;
-    background: linear-gradient(to bottom, rgba(0,0,0,0) 60%, rgba(20,20,20,0.15));
+    background: linear-gradient(to bottom, rgba(0,0,0,0) 50%, rgba(44,41,39,0.1));
 }
 
-/* Текстові блоки на телефонах займають решту 58% висоти */
-.slide-text-box {
-    height: 58vh;
+/* Текстовий контент знизу фотографії */
+.slide-content-box {
+    width: 100%;
+    height: 56vh; /* Решта екрану для тексту */
+    padding: 25px 20px;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    padding: 25px 20px;
-    text-align: center;
     align-items: center;
-    position: relative;
+    justify-content: center;
+    text-align: center;
 }
 
-/* Спеціальний внутрішній скрол для великих текстів, щоб нічого не зрізалось */
+/* Центрування для головного першого слайда */
+.hero-center {
+    justify-content: center;
+}
+
+/* Внутрішній скрол тексту (якщо телефон маленький) */
 .text-scrollable {
     width: 100%;
     overflow-y: auto;
+    max-height: 38vh;
     padding: 0 5px;
-    max-height: 40vh;
-}
-.text-scrollable p {
-    font-size: 0.92rem;
-    line-height: 1.6;
-    margin-bottom: 12px;
-    color: #4e4742;
-    text-align: center;
 }
 
-/* ========================================== */
-/* 5. ЕЛЕМЕНТИ ОФОРМЛЕННЯ ТЕКСТІВ             */
-/* ========================================== */
+.text-scrollable p {
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: #4e4742;
+    margin-bottom: 12px;
+}
+
+/* Текст та шрифти */
 .gold-badge {
-    font-size: 0.7rem;
+    font-size: 0.65rem;
     text-transform: uppercase;
     letter-spacing: 4px;
     color: #bfa15f;
     margin-bottom: 10px;
+    font-weight: 500;
 }
 
 .main-title {
-    font-size: 2.6rem;
+    font-size: 2.5rem;
     line-height: 1.1;
     color: #332f2c;
 }
 
 .and-sym {
-    font-style: italic;
     color: #bfa15f;
-    font-size: 2.2rem;
+    font-style: italic;
+    font-size: 2rem;
+}
+
+.ornament {
+    color: #dfba6b;
+    font-size: 0.8rem;
+    letter-spacing: 4px;
+    margin: 10px 0;
+}
+
+.wedding-date-text {
+    font-size: 1.1rem;
+    letter-spacing: 2px;
+    margin-top: 5px;
+    color: #332f2c;
 }
 
 .wedding-status {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     letter-spacing: 4px;
-    margin-top: 10px;
-    color: #56504c;
+    margin-top: 5px;
+    color: #6e655f;
 }
 
 .wedding-city {
     font-size: 0.8rem;
-    letter-spacing: 1px;
     color: #8c827a;
-    margin-top: 5px;
+    margin-top: 3px;
 }
 
-.section-subtitle {
-    font-size: 0.7rem;
-    text-transform: uppercase;
-    letter-spacing: 3px;
-    color: #bfa15f;
-    margin-bottom: 5px;
-}
-
-.slide-text-box h2 {
-    font-size: 2rem;
-    line-height: 1.2;
+.slide-content-box h2 {
+    font-size: 1.8rem;
     color: #332f2c;
-    margin-bottom: 15px;
+    margin-bottom: 5px;
+    line-height: 1.2;
 }
 
 .gold-line {
-    width: 60px;
+    width: 50px;
     height: 1px;
     background-color: #dfba6b;
-    margin: 15px 0;
+    margin: 15px auto;
+}
+
+.details-p {
+    font-size: 0.88rem !important;
+}
+
+.slide-content-box h3 {
+    font-size: 1.05rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+    color: #444;
 }
 
 /* ========================================== */
-/* 6. АДАПТИВНИЙ ТАЙМЛАЙН ПРОГРАМИ            */
+/* 5. МОБІЛЬНИЙ ТАЙМЛАЙН ПРОГРАМИ             */
 /* ========================================== */
-.slide-center-box {
-    width: 100%;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    padding: 30px 20px;
+.full-page-content {
+    height: 100vh !important; /* На всю висоту екрану, бо без фото */
+    justify-content: flex-start;
+    padding-top: 40px;
 }
 
-.timeline-container {
+.timeline {
     width: 100%;
-    max-height: 65vh;
-    overflow-y: auto;
     margin-top: 20px;
     position: relative;
+    text-align: left;
+    overflow-y: auto;
+    max-height: 70vh;
     padding-left: 10px;
 }
 
-.timeline-container::before {
+.timeline::before {
     content: '';
     position: absolute;
-    left: 65px;
+    left: 55px;
     top: 5px;
     bottom: 5px;
     width: 1px;
     background-color: #dfba6b;
 }
 
-.timeline-block {
+.timeline-item {
     display: flex;
     margin-bottom: 20px;
     position: relative;
 }
 
-.time-stamp {
-    min-width: 50px;
+.time {
+    min-width: 45px;
     font-weight: 500;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     color: #bfa15f;
     text-align: right;
     padding-top: 2px;
 }
 
-.timeline-block::before {
+.timeline-item::before {
     content: '';
     position: absolute;
-    left: 62px;
-    top: 7px;
-    width: 7px;
-    height: 7px;
+    left: 52px; top: 7px;
+    width: 7px; height: 7px;
     background-color: #fdfcfb;
     border: 1px solid #bfa15f;
     border-radius: 50%;
     z-index: 2;
 }
 
-.timeline-content {
-    padding-left: 30px;
-    text-align: left;
+.event-desc {
+    padding-left: 25px;
 }
 
-.timeline-content h3 {
-    font-size: 1.05rem;
-    color: #332f2c;
-    margin-bottom: 2px;
-    font-family: 'Montserrat', sans-serif;
-}
-
-.timeline-content p {
-    font-size: 0.85rem;
-    color: #706761;
-}
-
-/* Деталі локації */
-.details-box h3 {
+.event-desc h3 {
     font-family: 'Montserrat', sans-serif;
     font-size: 0.95rem;
     font-weight: 500;
-    text-transform: uppercase;
-    color: #444;
-    margin-bottom: 5px;
-}
-.details-box p {
-    font-size: 0.88rem;
-    line-height: 1.5;
-    color: #666;
-    margin-bottom: 10px;
+    text-transform: none;
+    margin-bottom: 1px;
+    color: #332f2c;
 }
 
-/* Слайд 5: RSVP та QR код */
-.rsvp-deadline {
-    font-size: 0.85rem;
-    font-style: italic;
-    color: #8c827a;
-    margin-bottom: 10px;
+.event-desc p {
+    font-size: 0.8rem;
+    color: #7a7069;
 }
 
-.phone-block {
+/* ========================================== */
+/* 6. RSVP, КОНТАКТИ ТА БЛОК СТРИЛКАМИ QR     */
+/* ========================================== */
+.contacts-wrapper {
     display: flex;
     flex-direction: column;
     gap: 8px;
-    margin-bottom: 5px;
+    width: 100%;
+    margin-bottom: 15px;
 }
-.phone-link, .mail-link {
-    color: #2c2927;
+
+.rsvp-sub {
+    font-size: 0.85rem;
+    font-style: italic;
+    color: #777;
+}
+
+.phone-btn {
+    width: 100%;
+    background-color: #fff;
+    border: 1px solid #e5ded6;
+    padding: 10px;
+    border-radius: 25px;
+    color: #332f2c;
     text-decoration: none;
-    font-size: 0.95rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+    transition: background-color 0.3s;
+}
+
+.phone-btn:hover {
+    background-color: #faf6f0;
+}
+
+.registry-text {
+    font-size: 0.8rem !important;
+    color: #777 !important;
+}
+
+.mail-link {
+    font-size: 0.85rem;
+    color: #bfa15f;
+    text-decoration: none;
     font-weight: 500;
 }
 
-.registry-text { font-size: 0.85rem; color: #666; }
-.registry-sub { font-size: 0.8rem; color: #888; margin-top: 5px; }
-
-/* QR код картка */
-.qr-flex-box {
-    height: 42vh;
+/* Блок фото з QR кодом */
+.qr-bg-flex {
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #eae1d7;
+    background-color: #dcd4cb;
 }
-.grid-bg-photo {
+
+.opacity-bg {
     position: absolute;
     width: 100%; height: 100%;
     object-fit: cover;
-    opacity: 0.25;
+    opacity: 0.3;
 }
-.qr-card {
+
+.qr-container-box {
     position: relative;
-    background: white;
-    padding: 15px 25px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-    text-align: center;
-    z-index: 2;
+    background: #fff;
+    padding: 15px 20px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
     border-radius: 4px;
+    text-align: center;
+    z-index: 5;
 }
-.qr-card p {
-    font-size: 0.65rem;
+
+.qr-title {
+    font-size: 0.6rem;
     letter-spacing: 2px;
-    margin-bottom: 10px;
     color: #888;
+    margin-bottom: 8px;
+    font-weight: 500;
 }
-.qr-code-img {
-    width: 110px;
-    height: 110px;
+
+.qr-img {
+    width: 105px;
+    height: 105px;
     display: block;
 }
 
 /* ========================================== */
-/* 7. ІНДИКАТОР ПРОГРЕСУ ТА ВІДСУТНІСТЬ СТРІЛОК */
+/* 7. ПРОГРЕС-БАР ТА НАВІГАЦІЙНІ ТАП-ПІДКАЗКИ */
 /* ========================================== */
 .progress-bar-container {
     position: fixed;
     top: 0; left: 0; width: 100%; height: 3px;
-    background-color: rgba(0,0,0,0.02);
+    background-color: rgba(255,255,255,0.1);
     z-index: 60;
     opacity: 0; visibility: hidden;
 }
@@ -504,31 +465,40 @@ h1, h2, h3 {
 .progress-line {
     height: 100%; width: 20%;
     background-color: #dfba6b;
-    transition: width 0.5s ease;
+    transition: width 0.4s ease;
 }
 
-/* Вимикаємо фізичні стрілки на мобільних телефонах повністю */
-.nav-arrow {
-    display: none !important;
+/* Спливаюча на 3 секунди підказка для користувача */
+.tap-hint {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(44, 41, 39, 0.85);
+    color: #fff;
+    padding: 8px 16px;
+    font-size: 0.75rem;
+    border-radius: 20px;
+    z-index: 55;
+    letter-spacing: 1px;
+    pointer-events: none;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.5s;
 }
+.tap-hint.show { opacity: 1; visibility: visible; }
 
-/* ========================================== */
-/* 8. МЕДІА-ЗАПИТ ДЛЯ ВЕЛИКИХ ЕКРАНІВ (ПК)     */
-/* ========================================== */
-@media (min-width: 901px) {
-    /* Якщо відкрити на комп'ютері, сайт перебудується у вишуканий альбомний вигляд */
-    .slide-grid { flex-direction: row; }
-    .slide-grid.inverse { flex-direction: row-reverse; }
-    .slide-image-box { width: 50%; height: 100vh; }
-    .slide-text-box { width: 50%; height: 100vh; padding: 40px 60px; text-align: left; align-items: flex-start; }
-    .text-scrollable p { text-align: left; font-size: 1rem; }
-    .main-title { font-size: 4rem; }
-    .slide-text-box h2 { font-size: 2.8rem; }
-    .qr-flex-box { width: 50%; height: 100vh; }
-    .qr-code-img { width: 150px; height: 150px; }
-    .timeline-container { padding-left: 0; }
-    .timeline-container::before { left: 80px; }
-    .timeline-block::before { left: 77px; }
-    .time-stamp { min-width: 65px; text-align: right; }
-    .timeline-content { padding-left: 40px; }
+/* Анімація плавного проявлення тексту всередині слайду */
+.slide-content-box > * {
+    opacity: 0;
+    transform: translateY(15px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
 }
+.slide.active .slide-content-box > * {
+    opacity: 1;
+    transform: translateY(0);
+}
+.slide-content-box > *:nth-child(1) { transition-delay: 0.1s; }
+.slide-content-box > *:nth-child(2) { transition-delay: 0.2s; }
+.slide-content-box > *:nth-child(3) { transition-delay: 0.3s; }
+.slide-content-box > *:nth-child(4) { transition-delay: 0.4s; }

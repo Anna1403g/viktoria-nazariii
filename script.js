@@ -1,13 +1,11 @@
 document.addEventListener('DOMContentLoaded', () => {
     
-    // Елементи інтерфейсу та обгортки конверта
     const envelopeWrapper = document.getElementById('envelopeWrapper');
     const mainEnvelope = document.getElementById('mainEnvelope');
     const mainSlider = document.getElementById('mainSlider');
-    const prevBtn = document.getElementById('prevBtn');
-    const nextBtn = document.getElementById('nextBtn');
     const progressBar = document.getElementById('progressBar');
     const progressLine = document.querySelector('.progress-line');
+    const tapHint = document.getElementById('tapHint');
     const slides = document.querySelectorAll('.slide');
     
     let currentSlide = 0;
@@ -15,87 +13,75 @@ document.addEventListener('DOMContentLoaded', () => {
     let isEnvelopeOpened = false;
 
     // ==========================================
-    // ЛОГІКА ІНТЕРАКТИВНОГО ВІДКРИТТЯ КОНВЕРТА
+    // ЛОГІКА ВІДКРИТТЯ КОНВЕРТА Мобільна версія
     // ==========================================
     mainEnvelope.addEventListener('click', (e) => {
-        e.stopPropagation(); // Запобігаємо миттєвому перемиканню першого слайду
+        e.stopPropagation();
         
         if (!isEnvelopeOpened) {
             isEnvelopeOpened = true;
             
-            // Крок 1: Додаємо клас для запуску анімації відкривання клапана та вильоту листа
+            // Відкриваємо кришку конверта
             envelopeWrapper.classList.add('open');
             
-            // Крок 2: Чекаємо завершення вильоту картки (1.5 сек) і плавно ховаємо весь екран конверта
+            // Затримка на виліт листа та зникнення конверта
             setTimeout(() => {
                 envelopeWrapper.classList.add('fade-out');
                 mainSlider.classList.add('ready');
-                
-                // Крок 3: Робимо видимими стрілки та прогрес-бар головного сайту
-                prevBtn.classList.add('visible');
-                nextBtn.classList.add('visible');
                 progressBar.classList.add('visible');
                 
                 updateProgressBar();
-            }, 1800);
+                showTapHint();
+            }, 1500);
         }
     });
 
+    // Показ тимчасової підказки для гостя
+    function showTapHint() {
+        tapHint.classList.add('show');
+        setTimeout(() => {
+            tapHint.classList.remove('show');
+        }, 3500);
+    }
+
     // ==========================================
-    // ЛОГІКА РОБОТИ ТА ПЕРЕМИКАННЯ СЛАЙДІВ
+    // НАВІГАЦІЯ ТАПАМИ ПО ЕКРАНУ СМАРТФОНУ
     // ==========================================
     function showSlide(index) {
-        // Забираємо активний стан у поточного слайда
         slides[currentSlide].classList.remove('active');
-        
-        // Розраховуємо новий індекс (зациклене гортання)
         currentSlide = (index + totalSlides) % totalSlides;
-        
-        // Активуємо новий слайд
         slides[currentSlide].classList.add('active');
-        
-        // Оновлюємо золоту смугу прогресу
         updateProgressBar();
     }
 
-    // Оновлення ширини верхньої лінії прогресу
     function updateProgressBar() {
-        const progressPercentage = ((currentSlide + 1) / totalSlides) * 100;
-        progressLine.style.width = `${progressPercentage}%`;
+        const percentage = ((currentSlide + 1) / totalSlides) * 100;
+        progressLine.style.width = `${percentage}%`;
     }
 
-    // Перемикання кнопками-стрілками
-    nextBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        showSlide(currentSlide + 1);
-    });
-
-    prevBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        showSlide(currentSlide - 1);
-    });
-
-    // Перемикання кліками на ліву та праву частину екрана
+    // Клік по екрану ділить телефон навпіл: праворуч — вперед, ліворуч — назад
     document.addEventListener('click', (e) => {
-        // Якщо конверт ще не відкрито — ігноруємо кліки по екрану
         if (!isEnvelopeOpened) return;
 
-        const halfWidth = window.innerWidth / 2;
-        if (e.clientX > halfWidth) {
-            showSlide(currentSlide + 1); // Клік праворуч — наступний
+        // Перевіряємо, чи користувач не натиснув на посилання або кнопку телефону
+        if (e.target.tagName === 'A' || e.target.closest('.text-scrollable') && e.target.tagName === 'P') {
+            return; 
+        }
+
+        const screenWidth = window.innerWidth;
+        const clickX = e.clientX;
+
+        if (clickX > screenWidth / 2) {
+            showSlide(currentSlide + 1); // Клік по правій стороні
         } else {
-            showSlide(currentSlide - 1); // Клік ліворуч — попередній
+            showSlide(currentSlide - 1); // Клік по лівій стороні
         }
     });
 
-    // Перемикання стрілками на клавіатурі
+    // Додатково залишаємо стрілочки клавіатури, якщо хтось відкриє на ноутбуці
     document.addEventListener('keydown', (e) => {
         if (!isEnvelopeOpened) return;
-        
-        if (e.key === 'ArrowRight') {
-            showSlide(currentSlide + 1);
-        } else if (e.key === 'ArrowLeft') {
-            showSlide(currentSlide - 1);
-        }
+        if (e.key === 'ArrowRight') showSlide(currentSlide + 1);
+        if (e.key === 'ArrowLeft') showSlide(currentSlide - 1);
     });
 });
